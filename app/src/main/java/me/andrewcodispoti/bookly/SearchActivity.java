@@ -1,6 +1,5 @@
 package me.andrewcodispoti.bookly;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -9,22 +8,27 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import me.andrewcodispoti.bookly.Model.SearchResult;
-import me.andrewcodispoti.bookly.Model.SearchResultList;
 
 /**
  * Created by andrewcodispoti on 2015-08-15.
@@ -46,27 +50,39 @@ public class SearchActivity extends ListActivity {
         @Override
         protected ArrayList<SearchResult> doInBackground(String... params) {
             URL url = null;
-            HttpURLConnection httpURLConnection = null;
+            HttpURLConnection conn = null;
             ArrayList<SearchResult> results = new ArrayList<>();
             try {
                 url = new URL(Constants.searchURL(params[0]));
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                InputStream is = httpURLConnection.getInputStream();
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(10000 /* milliseconds */);
+                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+                conn.connect();
+                InputStream is = conn.getInputStream();
                 String jsonResult = convertStreamToString(is);
+
                 Gson gson = new Gson();
-                SearchResultList resultList = gson.fromJson(jsonResult, SearchResultList.class);
-                Log.d("Bookly","Parsed");
+                JsonParser parser = new JsonParser();
+                JsonArray contentArray = parser.parse(jsonResult).getAsJsonArray();
+                for (int i = 0 ;i<contentArray.size(); i++){
+                    SearchResult result = gson.fromJson(contentArray.get(i).getAsString(), SearchResult.class);
+                    results.add(result);
+                }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
+            } catch (JsonParseException e) {
+                e.printStackTrace();
+            }finally{
+                if (conn != null) {
+                    conn.disconnect();
                 }
             }
 
-            return null;
+            return results;
         }
 
         @Override

@@ -9,7 +9,7 @@ public class SearchResult {
     public String link;
     public String size;
     public int quality;
-
+    public int type;
     @Override
     public String toString(){
         return title;

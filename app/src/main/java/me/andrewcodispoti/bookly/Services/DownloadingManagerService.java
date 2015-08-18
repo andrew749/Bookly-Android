@@ -8,12 +8,11 @@ import android.util.Log;
 import com.turn.ttorrent.client.Client;
 import com.turn.ttorrent.client.SharedTorrent;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
@@ -39,7 +38,6 @@ public class DownloadingManagerService extends IntentService {
         result = (SearchResult)intent.getSerializableExtra("bookData");
 //        new TorrentFileDownloader().execute(result.link);
         getTorrentReady(downloadTorrentFile(result.link));
-        downloadFile();
     }
 
     Thread downloadThread = new Thread(){
@@ -62,12 +60,25 @@ public class DownloadingManagerService extends IntentService {
             InputStream is = conn.getInputStream();
             String name = result.title.replaceAll("\\W+", "_");
             file = new File(getCacheDir().getAbsolutePath()+File.separator+name+".torrent");
-            FileOutputStream os = new FileOutputStream(file);
-            IOUtils.copy(is,os);
+            copyInputStreamToFile(is, file);
         }catch(Exception e){
             e.printStackTrace();
         }
         return file;
+    }
+    private void copyInputStreamToFile( InputStream in, File file ) {
+        try {
+            OutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int len;
+            while((len=in.read(buf))>0){
+                out.write(buf,0,len);
+            }
+            out.close();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void getTorrentReady(File file){
         if (file!= null){

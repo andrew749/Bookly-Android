@@ -1,11 +1,13 @@
-package me.andrewcodispoti.bookly;
+package me.andrewcodispoti.bookly.Activity;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -28,20 +30,33 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.andrewcodispoti.bookly.Adapters.BookListAdapter;
+import me.andrewcodispoti.bookly.Constants;
 import me.andrewcodispoti.bookly.Model.SearchResult;
+import me.andrewcodispoti.bookly.R;
 
 /**
  * Created by andrewcodispoti on 2015-08-15.
  */
-public class SearchActivity extends ListActivity {
+public class SearchActivity extends Activity {
+    ListView resultsList = null;
+    BookListAdapter adapter;
+    ArrayList<SearchResult> results = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.searchlayout);
+
+
+        resultsList = (ListView) findViewById(R.id.searchResultsList);
+        adapter = new BookListAdapter(results, this);
+        resultsList.setAdapter(adapter);
+
+
         Intent intent = getIntent();
 
         if (Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Log.d("BOOKLY","Got query "+ query);
             new SearchBooksTask().execute(query);
         }
 
@@ -62,7 +77,6 @@ public class SearchActivity extends ListActivity {
                 conn.connect();
                 InputStream is = conn.getInputStream();
                 String jsonResult = convertStreamToString(is);
-
                 Gson gson = new Gson();
                 JsonParser parser = new JsonParser();
                 JsonArray contentArray = parser.parse(jsonResult).getAsJsonArray();
@@ -88,7 +102,11 @@ public class SearchActivity extends ListActivity {
         @Override
         protected void onPostExecute(ArrayList<SearchResult> searchResults) {
             super.onPostExecute(searchResults);
+            results.clear();
+            results.addAll(searchResults);
+            adapter.notifyDataSetChanged();
         }
+
         public String convertStreamToString(InputStream is) throws IOException{
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             StringBuilder out = new StringBuilder();

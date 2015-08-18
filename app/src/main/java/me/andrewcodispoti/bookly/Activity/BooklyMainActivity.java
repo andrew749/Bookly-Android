@@ -1,4 +1,4 @@
-package me.andrewcodispoti.bookly;
+package me.andrewcodispoti.bookly.Activity;
 
 import android.app.Activity;
 import android.app.SearchManager;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
 import me.andrewcodispoti.bookly.Fragments.NavigationDrawerFragment;
+import me.andrewcodispoti.bookly.R;
 
 public class BooklyMainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {

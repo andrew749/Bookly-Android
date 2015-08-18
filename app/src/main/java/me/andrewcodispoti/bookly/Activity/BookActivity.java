@@ -1,9 +1,11 @@
-package me.andrewcodispoti.bookly;
+package me.andrewcodispoti.bookly.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 
 import com.joanzapata.pdfview.PDFView;
+
+import me.andrewcodispoti.bookly.R;
 
 /**
  * Created by andrewcodispoti on 2015-08-15.

@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -38,7 +39,7 @@ import me.andrewcodispoti.bookly.R;
 /**
  * Created by andrewcodispoti on 2015-08-15.
  */
-public class SearchActivity extends Activity {
+public class SearchActivity extends AppCompatActivity {
     ListView resultsList = null;
     BookListAdapter adapter;
     ArrayList<SearchResult> results = new ArrayList<>();

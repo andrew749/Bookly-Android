@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -39,7 +41,7 @@ import me.andrewcodispoti.bookly.R;
 /**
  * Created by andrewcodispoti on 2015-08-15.
  */
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements  ListView.OnItemClickListener {
     ListView resultsList = null;
     BookListAdapter adapter;
     ArrayList<SearchResult> results = new ArrayList<>();
@@ -48,20 +50,28 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searchlayout);
 
-
         resultsList = (ListView) findViewById(R.id.searchResultsList);
         adapter = new BookListAdapter(results, this);
         resultsList.setAdapter(adapter);
-
+        resultsList.setOnItemClickListener(this);
 
         Intent intent = getIntent();
 
         if (Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
+            getSupportActionBar().setTitle(query);
             new SearchBooksTask().execute(query);
         }
 
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this, BookDetailActivity.class);
+        intent.putExtra("bookData", results.get(position));
+        startActivity(intent);
+    }
+
     class SearchBooksTask extends AsyncTask<String, Void, ArrayList<SearchResult>>{
         @Override
         protected ArrayList<SearchResult> doInBackground(String... params) {

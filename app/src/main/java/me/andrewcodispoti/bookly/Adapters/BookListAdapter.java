@@ -50,4 +50,5 @@ public class BookListAdapter extends BaseAdapter {
         titleView.setText(results.get(position).title);
         return convertView;
     }
+
 }

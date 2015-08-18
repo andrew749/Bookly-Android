@@ -7,6 +7,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/searchResultsList"
-        android:layout_gravity="center_horizontal"
-        android:background="#FEF"/>
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>

@@ -10,4 +10,10 @@
 
     <string name="search_hint">Search a book name</string>
     <string name="search_title">@string/search_hint</string>
+
+    <string name="book_detail_title_placeholder">Title</string>
+    <string name="book_detail_description_placeholder">Description</string>
+    <string name="book_detail_link_placeholder">Link</string>
+
+    <string name="book_detail_download_button_text">Download</string>
 </resources>

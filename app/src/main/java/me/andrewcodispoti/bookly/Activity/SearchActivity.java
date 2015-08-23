@@ -71,8 +71,8 @@ public class SearchActivity extends AppCompatActivity implements  ListView.OnIte
             try {
                 url = new URL(Constants.searchURL(params[0]));
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000 /* milliseconds */);
-                conn.setConnectTimeout(15000 /* milliseconds */);
+//                conn.setReadTimeout(10000 /* milliseconds */);
+//                conn.setConnectTimeout(15000 /* milliseconds */);
                 conn.setRequestMethod("GET");
                 conn.setDoInput(true);
                 conn.connect();

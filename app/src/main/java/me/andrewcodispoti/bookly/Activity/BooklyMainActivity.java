@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -17,12 +18,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import me.andrewcodispoti.bookly.Fragments.NavigationDrawerFragment;
+import me.andrewcodispoti.bookly.Model.SaveResult;
 import me.andrewcodispoti.bookly.R;
 
 public class BooklyMainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
+    private static final String BOOKLY_IDENTIFIER = "Bookly";
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -73,7 +79,7 @@ public class BooklyMainActivity extends AppCompatActivity
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.bookly_main, menu);
             restoreActionBar();
-            SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
             MenuItem searchItem = menu.findItem(R.id.searchView);
             SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -95,6 +101,38 @@ public class BooklyMainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<SaveResult> getSavedBooks() {
+        if (isExternalStorageReadable()) {
+            File dir = new File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), BOOKLY_IDENTIFIER);
+            ArrayList<SaveResult> results = new ArrayList<>();
+            for (File x : dir.listFiles()) {
+                results.add(new SaveResult(x.getName(),x));
+            }
+
+            return results;
+        }
+        return null;
     }
 
     /**

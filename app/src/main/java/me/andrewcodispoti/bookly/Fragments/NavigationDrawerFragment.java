@@ -21,10 +21,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import me.andrewcodispoti.bookly.Model.SaveResult;
 import me.andrewcodispoti.bookly.R;
 
 /**
@@ -103,7 +99,7 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
+                getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 getResources().getStringArray(R.array.menu_entries)));

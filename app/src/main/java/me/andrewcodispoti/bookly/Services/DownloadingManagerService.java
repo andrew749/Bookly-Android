@@ -57,11 +57,7 @@ public class DownloadingManagerService extends IntentService {
         }
         return file;
     }
-    private  class DownloadTask extends  AsyncTask<String, Void, File>{
-
-        public DownloadTask(){
-
-        }
+    private class DownloadTask extends  AsyncTask<String, Void, File>{
         @Override
         protected File doInBackground(String... params) {
             return downloadFile(params[0]);

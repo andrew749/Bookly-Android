@@ -11,6 +11,7 @@ import me.andrewcodispoti.bookly.R;
 
 /**
  * Created by andrewcodispoti on 2015-08-15.
+ * Holds the view to display a book.
  */
 public class BookActivity extends Activity {
     File file;

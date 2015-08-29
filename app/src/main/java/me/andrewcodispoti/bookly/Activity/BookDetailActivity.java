@@ -13,6 +13,7 @@ import me.andrewcodispoti.bookly.Services.DownloadingManagerService;
 
 /**
  * Created by andrewcodispoti on 2015-08-17.
+ * An Detail search result for displaying a book result.
  */
 public class BookDetailActivity extends AppCompatActivity implements View.OnClickListener {
     SearchResult result = null;

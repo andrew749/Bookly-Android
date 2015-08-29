@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -30,6 +31,7 @@ import me.andrewcodispoti.bookly.R;
 
 /**
  * Created by andrewcodispoti on 2015-08-15.
+ * Handles searching and returns a list of results.
  */
 public class SearchActivity extends AppCompatActivity implements  ListView.OnItemClickListener {
     ListView resultsList = null;
@@ -40,6 +42,8 @@ public class SearchActivity extends AppCompatActivity implements  ListView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searchlayout);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         resultsList = (ListView) findViewById(R.id.searchResultsList);
         adapter = new BookListAdapter(results, this);
         resultsList.setAdapter(adapter);

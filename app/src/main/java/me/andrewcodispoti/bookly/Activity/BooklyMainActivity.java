@@ -12,11 +12,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,11 +42,14 @@ public class BooklyMainActivity extends AppCompatActivity
      */
     private CharSequence mTitle;
 
+    private BooksListFragment booksListFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookly_main);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -58,8 +64,9 @@ public class BooklyMainActivity extends AppCompatActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
+        booksListFragment = new BooksListFragment();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, booksListFragment)
                 .commit();
     }
 
@@ -127,7 +134,7 @@ public class BooklyMainActivity extends AppCompatActivity
             File dir = new File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), BOOKLY_IDENTIFIER);
             ArrayList<SaveResult> results = new ArrayList<>();
             for (File x : dir.listFiles()) {
-                results.add(new SaveResult(x.getName(),x));
+                results.add(new SaveResult(x.getName(), x));
             }
 
             return results;
@@ -138,39 +145,35 @@ public class BooklyMainActivity extends AppCompatActivity
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class BooksListFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+        ListView lv;
+        ArrayAdapter<String> adapter;
+        ArrayList<String> books = new ArrayList<>();
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
+        public void setData(ArrayList<String> books) {
+            this.books.clear();
+            this.books.addAll(books);
+            adapter.notifyDataSetChanged();
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_bookly_main, container, false);
+            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, books);
+
+            lv = (ListView) rootView.findViewById(R.id.booksList);
+            lv.setAdapter(adapter);
             return rootView;
         }
 
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-
         }
     }
 

@@ -1,12 +1,10 @@
 package me.andrewcodispoti.bookly.Activity;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,19 +12,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import me.andrewcodispoti.bookly.Fragments.BooksListFragment;
@@ -50,6 +39,7 @@ public class BooklyMainActivity extends AppCompatActivity
 
     BooksListFragment booksListFragment;
     ArrayList<File> bookFiles = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +56,13 @@ public class BooklyMainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         File books = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         ArrayList<String> bookTitles = new ArrayList<>();
-        for (File x: books.listFiles()){
+
+        for (File x : books.listFiles()) {
             bookTitles.add(x.getName());
             bookFiles.add(x);
         }
-        if(bookTitles.size() > 0){
-            booksListFragment.setData(bookTitles,this);
+        if (bookTitles.size() > 0) {
+            booksListFragment.setData(bookTitles, this);
         }
     }
 

@@ -64,17 +64,6 @@ public class BooklyMainActivity extends AppCompatActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        File test = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "test");
-        try {
-            FileOutputStream os = new FileOutputStream(test);
-            String t = "test";
-            os.write(t.getBytes());
-            os.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         File books = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         ArrayList<String> bookTitles = new ArrayList<>();
         for (File x: books.listFiles()){

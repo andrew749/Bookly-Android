@@ -23,7 +23,11 @@ public class BookActivity extends Activity {
         // add code to load pdf from file
         String pathToFile = getIntent().getStringExtra("filePath");
         file = new File(pathToFile);
-        pdfView.fromFile(file);
+        pdfView.fromFile(file).
+                defaultPage(1).
+                showMinimap(true).
+                enableSwipe(true).
+                load();
     }
 
     @Override

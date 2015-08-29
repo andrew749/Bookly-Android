@@ -3,6 +3,7 @@ package me.andrewcodispoti.bookly.Activity;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -20,16 +21,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import me.andrewcodispoti.bookly.Fragments.BooksListFragment;
 import me.andrewcodispoti.bookly.Fragments.NavigationDrawerFragment;
 import me.andrewcodispoti.bookly.Model.SaveResult;
 import me.andrewcodispoti.bookly.R;
 
 public class BooklyMainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, BooksListFragment.FileSelection {
 
     private static final String BOOKLY_IDENTIFIER = "Bookly";
     /**
@@ -42,8 +48,8 @@ public class BooklyMainActivity extends AppCompatActivity
      */
     private CharSequence mTitle;
 
-    private BooksListFragment booksListFragment;
-
+    BooksListFragment booksListFragment;
+    ArrayList<File> bookFiles = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,13 +64,39 @@ public class BooklyMainActivity extends AppCompatActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+        File test = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "test");
+        try {
+            FileOutputStream os = new FileOutputStream(test);
+            String t = "test";
+            os.write(t.getBytes());
+            os.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        File books = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        ArrayList<String> bookTitles = new ArrayList<>();
+        for (File x: books.listFiles()){
+            bookTitles.add(x.getName());
+            bookFiles.add(x);
+        }
+        if(bookTitles.size() > 0){
+            booksListFragment.setData(bookTitles,this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        booksListFragment = new BooksListFragment();
+        booksListFragment = new BooksListFragment(this);
         fragmentManager.beginTransaction()
                 .replace(R.id.container, booksListFragment)
                 .commit();
@@ -142,39 +174,10 @@ public class BooklyMainActivity extends AppCompatActivity
         return null;
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class BooksListFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        ListView lv;
-        ArrayAdapter<String> adapter;
-        ArrayList<String> books = new ArrayList<>();
-
-        public void setData(ArrayList<String> books) {
-            this.books.clear();
-            this.books.addAll(books);
-            adapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_bookly_main, container, false);
-            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, books);
-
-            lv = (ListView) rootView.findViewById(R.id.booksList);
-            lv.setAdapter(adapter);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-        }
+    @Override
+    public void didSelectFileAtIndex(int index) {
+        Intent intent = new Intent(this, BookActivity.class);
+        intent.putExtra("filePath", bookFiles.get(index).getAbsolutePath());
+        startActivity(intent);
     }
-
 }

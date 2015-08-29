@@ -16,4 +16,6 @@
     <string name="book_detail_link_placeholder">Link</string>
 
     <string name="book_detail_download_button_text">Download</string>
+    
+    <string name="nobook_placeholder">No Books Downloaded Yet!</string>
 </resources>

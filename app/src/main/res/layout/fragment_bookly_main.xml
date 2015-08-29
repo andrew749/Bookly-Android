@@ -5,7 +5,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".BooklyMainActivity$BooksListFragment">
-
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,4 +12,11 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nobook_placeholder"
+        android:id="@+id/warningLabel"
+        android:visibility="invisible"
+        android:layout_centerVertical="true" />
 </RelativeLayout>

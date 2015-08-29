@@ -3,6 +3,7 @@ package me.andrewcodispoti.bookly.Services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
@@ -35,14 +36,13 @@ public class DownloadingManagerService extends IntentService {
         result = (SearchResult)intent.getSerializableExtra("bookData");
 //        new TorrentFileDownloader().execute(result.link);
         if (result.type == 1){
-//            getTorrentReady(downloadFile(result.link));
+//            getTorrentReady(downloadTorrentFile(result.link));
         }else{
             downloadFile(result.link);
-//            new DownloadTask().execute(result.link);
         }
     }
 
-    public File downloadFile(String stringUrl){
+    public File downloadTorrentFile(String stringUrl){
         File file = null;
         try{
             URL url = new URL(stringUrl);
@@ -57,11 +57,21 @@ public class DownloadingManagerService extends IntentService {
         }
         return file;
     }
-    private class DownloadTask extends  AsyncTask<String, Void, File>{
-        @Override
-        protected File doInBackground(String... params) {
-            return downloadFile(params[0]);
+    public File downloadFile(String stringUrl){
+        File file = null;
+        try{
+            URL url = new URL(stringUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            String name = result.title.replaceAll("\\W+", "_");
+            File dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+            file = new File(dir,name);
+            copyInputStreamToFile(is, file);
+        }catch(Exception e){
+            e.printStackTrace();
         }
+        return file;
     }
     private void copyInputStreamToFile( InputStream in, File file ) {
         try {
